@@ -23,10 +23,11 @@ fn button(
     foreground: Color,
     background: Color,
     background_hover: Color,
+    background_pressed: Color,
     status: Status,
 ) -> Style {
     match status {
-        Status::Active | Status::Pressed => Style {
+        Status::Active => Style {
             background: Some(Background::Color(background)),
             text_color: foreground,
             border: Border {
@@ -44,11 +45,21 @@ fn button(
             },
             ..Default::default()
         },
+        Status::Pressed => Style {
+            background: Some(Background::Color(background_pressed)),
+            text_color: foreground,
+            border: Border {
+                radius: 4.0.into(),
+                ..Default::default()
+            },
+            ..Default::default()
+        },
         Status::Disabled => {
             let active: Style = button(
                 foreground,
                 background,
                 background_hover,
+                background_pressed,
                 Status::Active,
             );
 
@@ -84,7 +95,13 @@ pub fn sidebar_buffer(
         (_, _) => button_colors.background_hover,
     };
 
-    button(foreground, background, background_hover, status)
+    button(
+        foreground,
+        background,
+        background_hover,
+        button_colors.background_selected,
+        status,
+    )
 }
 
 pub fn primary(theme: &Theme, status: Status, selected: bool) -> Style {
@@ -103,7 +120,13 @@ pub fn primary(theme: &Theme, status: Status, selected: bool) -> Style {
         button_colors.background_hover
     };
 
-    button(foreground, background, background_hover, status)
+    button(
+        foreground,
+        background,
+        background_hover,
+        button_colors.background_selected,
+        status,
+    )
 }
 
 pub fn secondary(theme: &Theme, status: Status, selected: bool) -> Style {
@@ -122,7 +145,13 @@ pub fn secondary(theme: &Theme, status: Status, selected: bool) -> Style {
         button_colors.background_hover
     };
 
-    button(foreground, background, background_hover, status)
+    button(
+        foreground,
+        background,
+        background_hover,
+        button_colors.background_selected,
+        status,
+    )
 }
 
 pub fn picker(theme: &Theme, status: Status, is_selected: bool) -> Style {
@@ -141,7 +170,13 @@ pub fn picker(theme: &Theme, status: Status, is_selected: bool) -> Style {
         button_colors.background_hover
     };
 
-    button(foreground, background, background_hover, status)
+    button(
+        foreground,
+        background,
+        background_hover,
+        button_colors.background_selected,
+        status,
+    )
 }
 
 pub fn reaction(
@@ -165,7 +200,13 @@ pub fn reaction(
         (false, false) => button_colors.background_hover,
     };
 
-    button(foreground, background, background_hover, status)
+    button(
+        foreground,
+        background,
+        background_hover,
+        button_colors.background_selected,
+        status,
+    )
 }
 
 pub fn bare(_theme: &Theme, status: Status) -> Style {
