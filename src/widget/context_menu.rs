@@ -93,6 +93,7 @@ pub enum Status {
         position: Point,
         // Keep context menu open if button press is inside specified bounds
         keep_open_bounds: Option<(Vector, Size)>,
+        cursor_is_over: bool,
     },
 }
 
@@ -104,12 +105,26 @@ impl Status {
         }
     }
 
-    pub fn keep_open_bounds(&self) -> Option<&(Vector, Size)> {
+    pub fn keep_open_bounds(
+        &self,
+        reference_position: Point,
+    ) -> Option<Rectangle> {
         match self {
-            Status::Closed => None,
             Status::Open {
-                keep_open_bounds, ..
-            } => keep_open_bounds.as_ref(),
+                keep_open_bounds: Some((keep_open_vector, keep_open_size)),
+                ..
+            } => Some(Rectangle::new(
+                reference_position + *keep_open_vector,
+                *keep_open_size,
+            )),
+            _ => None,
+        }
+    }
+
+    pub fn cursor_is_over(&self) -> bool {
+        match self {
+            Status::Open { cursor_is_over, .. } => *cursor_is_over,
+            Status::Closed => false,
         }
     }
 }
@@ -253,6 +268,13 @@ where
 
         if is_mouse_event {
             let state = tree.state.downcast_mut::<State>();
+
+            if state.status.cursor_is_over() {
+                shell.capture_event();
+
+                return;
+            }
+
             let prev_status = state.status;
 
             // is this a mouse event for that we should do something?
@@ -267,25 +289,17 @@ where
                     false
                 };
 
-            let position = if is_activation_mouse_event {
-                match self.anchor {
-                    Anchor::Widget => {
-                        cursor.is_over(layout.bounds()).then_some({
-                            let widget = layout.bounds();
-                            Point::new(
-                                widget.x + widget.width,
-                                widget.y + widget.height,
-                            )
-                        })
-                    }
-                    Anchor::Cursor => {
-                        cursor.position_over(layout.bounds()).map(|cursor| {
-                            Point::new(cursor.x + 5.0, cursor.y + 5.0)
-                        })
-                    }
-                }
-            } else {
-                None
+            let position = match self.anchor {
+                Anchor::Widget => cursor.is_over(layout.bounds()).then_some({
+                    let widget = layout.bounds();
+                    Point::new(
+                        widget.x + widget.width,
+                        widget.y + widget.height,
+                    )
+                }),
+                Anchor::Cursor => cursor
+                    .position_over(layout.bounds())
+                    .map(|cursor| Point::new(cursor.x + 5.0, cursor.y + 5.0)),
             };
 
             // determinate next status
@@ -299,6 +313,7 @@ where
                     Status::Open {
                         position,
                         keep_open_bounds: None,
+                        cursor_is_over: false,
                     }
                 }
                 (
@@ -317,6 +332,7 @@ where
                             layout_bounds.position() - position,
                             layout_bounds.size(),
                         )),
+                        cursor_is_over: false,
                     }
                 }
                 (_, Status::Open { .. }, _, None)
@@ -329,11 +345,7 @@ where
             if next_status != prev_status {
                 state.status = next_status;
 
-                if matches!(next_status, Status::Open { .. })
-                    != matches!(prev_status, Status::Open { .. })
-                {
-                    shell.request_redraw();
-                }
+                shell.request_redraw();
 
                 if matches!(prev_status, Status::Closed)
                     && matches!(next_status, Status::Open { .. })
@@ -342,9 +354,7 @@ where
                     shell.publish(message);
                 }
 
-                if is_activation_mouse_event {
-                    shell.capture_event();
-                }
+                shell.capture_event();
             }
         }
     }
@@ -360,6 +370,7 @@ where
         if cursor.is_over(layout.bounds()) {
             self.mouse_interaction_on_hover.unwrap_or({
                 let base_state = tree.children.first().unwrap();
+
                 self.base.as_widget().mouse_interaction(
                     base_state, layout, cursor, viewport, renderer,
                 )
@@ -636,18 +647,19 @@ where
     ) {
         if let Event::Mouse(mouse::Event::ButtonPressed { .. }) = &event
             && cursor.position_over(layout.bounds()).is_none()
-            && self.state.status.keep_open_bounds().is_none_or(
-                |(keep_open_vector, keep_open_size)| {
-                    let keep_open_bounds = Rectangle::new(
-                        self.position + *keep_open_vector,
-                        *keep_open_size,
-                    );
-
-                    cursor.position_over(keep_open_bounds).is_none()
-                },
-            )
+            && self
+                .state
+                .status
+                .keep_open_bounds(self.position)
+                .is_none_or(|keep_open_bounds| {
+                    !cursor.is_over(keep_open_bounds)
+                })
         {
             self.state.status = Status::Closed;
+        }
+
+        if let Status::Open { cursor_is_over, .. } = &mut self.state.status {
+            *cursor_is_over = cursor.is_over(layout.bounds());
         }
 
         self.menu.as_widget_mut().update(

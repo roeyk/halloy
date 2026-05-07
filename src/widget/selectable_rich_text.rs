@@ -585,6 +585,7 @@ where
                         // Need absolute position. Infallible since we're within position_in
                         position: cursor.position_over(bounds).unwrap(),
                         keep_open_bounds: None,
+                        cursor_is_over: false,
                     };
                     state.context_menu_link = Some(link);
                     self.cached_entries = entries;
