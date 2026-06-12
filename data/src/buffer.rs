@@ -37,6 +37,8 @@ pub enum Internal {
     Highlights,
     #[strum(serialize = "Channel Discovery")]
     ChannelDiscovery(Option<Server>),
+    #[strum(serialize = "Config Editor")]
+    ConfigEditor,
 }
 
 impl Buffer {
@@ -114,6 +116,7 @@ impl Internal {
         Self::Logs,
         Self::Highlights,
         Self::ChannelDiscovery(None),
+        Self::ConfigEditor,
     ];
 
     pub fn key(&self) -> String {
@@ -122,6 +125,7 @@ impl Internal {
             Internal::Logs => "logs",
             Internal::Highlights => "highlights",
             Internal::ChannelDiscovery(_) => "channel-discovery",
+            Internal::ConfigEditor => "config-editor",
         }
         .to_string()
     }
@@ -130,6 +134,7 @@ impl Internal {
 impl From<config::sidebar::InternalBuffer> for Internal {
     fn from(config: config::sidebar::InternalBuffer) -> Self {
         match config {
+            config::sidebar::InternalBuffer::ConfigEditor => Self::ConfigEditor,
             config::sidebar::InternalBuffer::FileTransfers => {
                 Self::FileTransfers
             }

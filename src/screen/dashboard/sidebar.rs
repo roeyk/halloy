@@ -49,7 +49,6 @@ pub enum Message {
         system_information: Option<iced::system::Information>,
     },
     OpenDocumentation,
-    OpenConfigFile,
     ReloadComplete,
     MarkAsRead(buffer::Upstream),
     MarkServerAsRead(Server),
@@ -80,7 +79,6 @@ pub enum Event {
         system_information: Option<iced::system::Information>,
     },
     OpenDocumentation,
-    OpenConfigFile,
     ConfigReloaded(Result<Config, config::Error>),
     MarkAsRead(buffer::Upstream),
     MarkServerAsRead(Server),
@@ -183,9 +181,6 @@ impl Sidebar {
             }
             Message::MarkServerAsRead(server) => {
                 (Task::none(), Some(Event::MarkServerAsRead(server)))
-            }
-            Message::OpenConfigFile => {
-                (Task::none(), Some(Event::OpenConfigFile))
             }
             Message::Connect(server) => {
                 (Task::none(), Some(Event::Connect(server)))
@@ -454,11 +449,13 @@ impl Sidebar {
                             icon::documentation().style(theme::svg::primary),
                             Message::OpenDocumentation,
                         ),
-                        Menu::OpenConfigFile => context_button(
-                            text("Open config file"),
-                            Some(&keyboard.open_config_file),
+                        Menu::ConfigEditor => context_button(
+                            text("Config Editor"),
+                            Some(&keyboard.open_config_editor),
                             icon::config().style(theme::svg::primary),
-                            Message::OpenConfigFile,
+                            Message::ToggleInternalBuffer(
+                                buffer::Internal::ConfigEditor,
+                            ),
                         ),
                     }
                 },
@@ -791,6 +788,7 @@ impl Sidebar {
 #[derive(Debug, Clone, Copy)]
 enum Menu {
     RefreshConfig,
+    ConfigEditor,
     CommandBar,
     ThemeEditor,
     Highlights,
@@ -801,7 +799,6 @@ enum Menu {
     Update,
     HorizontalRule,
     Documentation,
-    OpenConfigFile,
     QuitApplication,
 }
 
@@ -849,7 +846,7 @@ impl Menu {
         }
 
         list.extend([
-            Self::OpenConfigFile,
+            Self::ConfigEditor,
             Self::RefreshConfig,
             Self::ThemeEditor,
             Self::QuitApplication,
@@ -1432,6 +1429,9 @@ fn internal_buffer_button<'a>(
     let (icon, badge) = match buffer {
         buffer::Internal::ChannelDiscovery(_) => {
             (show_icon.then_some(icon::channel_discovery()), None)
+        }
+        buffer::Internal::ConfigEditor => {
+            (show_icon.then_some(icon::config()), None)
         }
         buffer::Internal::FileTransfers => {
             (show_icon.then_some(icon::file_transfer()), None)

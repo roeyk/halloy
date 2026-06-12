@@ -411,6 +411,9 @@ impl std::fmt::Display for Buffer {
                 buffer::Internal::ChannelDiscovery(_) => {
                     write!(f, "Open Channel discovery")
                 }
+                buffer::Internal::ConfigEditor => {
+                    write!(f, "Open config editor")
+                }
             },
             Buffer::Replace(buffer) => match buffer {
                 buffer::Upstream::Server(server) => {
