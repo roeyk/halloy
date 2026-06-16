@@ -234,7 +234,7 @@ impl Sidebar {
                         .contains(&config::sidebar::InternalBuffer::Logs));
         let system_information = self.system_information.clone();
 
-        let icon = icon::menu().style(theme::svg::primary);
+        let icon = icon::menu();
 
         let badge = if show_notification_dot {
             Some((
@@ -324,19 +324,19 @@ impl Sidebar {
                         Menu::QuitApplication => context_button(
                             text("Quit Halloy"),
                             Some(&keyboard.quit_application),
-                            icon::quit().style(theme::svg::primary),
+                            icon::quit(),
                             Message::QuitApplication,
                         ),
                         Menu::RefreshConfig => context_button(
                             text("Reload config file"),
                             Some(&keyboard.reload_configuration),
-                            icon::refresh().style(theme::svg::primary),
+                            icon::refresh(),
                             Message::ReloadConfigFile,
                         ),
                         Menu::CommandBar => context_button(
                             text("Command Bar"),
                             Some(&keyboard.command_bar),
-                            icon::search().style(theme::svg::primary),
+                            icon::search(),
                             Message::ToggleCommandBar,
                         ),
                         Menu::FileTransfers => context_button(
@@ -368,7 +368,7 @@ impl Sidebar {
                         Menu::Highlights => context_button(
                             text("Highlights"),
                             Some(&keyboard.highlights),
-                            icon::highlights().style(theme::svg::primary),
+                            icon::highlights(),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::Highlights,
                             ),
@@ -376,8 +376,7 @@ impl Sidebar {
                         Menu::ChannelDiscovery => context_button(
                             text("Channel Discovery"),
                             None,
-                            icon::channel_discovery()
-                                .style(theme::svg::primary),
+                            icon::channel_discovery(),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::ChannelDiscovery(None),
                             ),
@@ -409,7 +408,7 @@ impl Sidebar {
                         Menu::ThemeEditor => context_button(
                             text("Theme Editor"),
                             Some(&keyboard.theme_editor),
-                            icon::theme_editor().style(theme::svg::primary),
+                            icon::theme_editor(),
                             Message::ToggleThemeEditor,
                         ),
                         Menu::HorizontalRule => match length {
@@ -432,7 +431,7 @@ impl Sidebar {
                         Menu::Version => context_button(
                             text("About Halloy"),
                             None,
-                            icon::documentation().style(theme::svg::primary),
+                            icon::documentation(),
                             Message::OpenAbout {
                                 version: version.current.clone(),
                                 commit: data::environment::GIT_HASH
@@ -446,13 +445,13 @@ impl Sidebar {
                         Menu::Documentation => context_button(
                             text("Documentation"),
                             None,
-                            icon::documentation().style(theme::svg::primary),
+                            icon::documentation(),
                             Message::OpenDocumentation,
                         ),
                         Menu::ConfigEditor => context_button(
                             text("Config Editor"),
                             Some(&keyboard.open_config_editor),
-                            icon::config().style(theme::svg::primary),
+                            icon::config(),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::ConfigEditor,
                             ),
@@ -645,6 +644,12 @@ impl Sidebar {
                     config::sidebar::InternalBuffer::Logs => {
                         internal_buffers
                             .push(button(buffer::Internal::Logs, "Logs"));
+                    }
+                    config::sidebar::InternalBuffer::ConfigEditor => {
+                        internal_buffers.push(button(
+                            buffer::Internal::ConfigEditor,
+                            "Config Editor",
+                        ));
                     }
                 }
             }
@@ -1027,14 +1032,11 @@ fn upstream_buffer_button<'a>(
         {
             Some(Icon::Upstream(server_icon))
         } else {
-            Some(Icon::Internal(
-                if server.is_bouncer_network() {
-                    icon::link()
-                } else {
-                    icon::connected()
-                }
-                .style(theme::svg::primary),
-            ))
+            Some(Icon::Internal(if server.is_bouncer_network() {
+                icon::link()
+            } else {
+                icon::connected()
+            }))
         }
     } else {
         None
@@ -1567,7 +1569,6 @@ fn sidebar_icon<'a>(
                 image::from_data(server_icon, true, ContentFit::Contain)
             }
             Icon::Internal(icon) => icon
-                .style(theme::svg::primary)
                 .width(Length::Shrink)
                 .content_fit(ContentFit::Contain)
                 .into(),

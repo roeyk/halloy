@@ -17,21 +17,21 @@ pub fn connected<'a>() -> Svg<'a, Theme> {
     let entypo_globe =
         include_bytes!("../assets/fontello/entypo-globe.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_globe))
+    svg(svg::Handle::from_memory(entypo_globe)).style(theme::svg::primary)
 }
 
 pub fn disconnected<'a>() -> Svg<'a, Theme> {
     let entypo_cancel =
         include_bytes!("../assets/fontello/entypo-cancel.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_cancel))
+    svg(svg::Handle::from_memory(entypo_cancel)).style(theme::svg::primary)
 }
 
 pub fn link<'a>() -> Svg<'a, Theme> {
     let entypo_link =
         include_bytes!("../assets/fontello/entypo-link.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_link))
+    svg(svg::Handle::from_memory(entypo_link)).style(theme::svg::primary)
 }
 
 pub fn cancel<'a>() -> Text<'a> {
@@ -58,7 +58,7 @@ pub fn search<'a>() -> Svg<'a, Theme> {
     let entypo_search =
         include_bytes!("../assets/fontello/entypo-search.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_search))
+    svg(svg::Handle::from_memory(entypo_search)).style(theme::svg::primary)
 }
 
 pub fn checkmark<'a>() -> Text<'a> {
@@ -69,28 +69,28 @@ pub fn file_transfer<'a>() -> Svg<'a, Theme> {
     let entypo_download =
         include_bytes!("../assets/fontello/entypo-download.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_download))
+    svg(svg::Handle::from_memory(entypo_download)).style(theme::svg::primary)
 }
 
 pub fn refresh<'a>() -> Svg<'a, Theme> {
     let entypo_arrows_ccw =
         include_bytes!("../assets/fontello/entypo-arrows-ccw.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_arrows_ccw))
+    svg(svg::Handle::from_memory(entypo_arrows_ccw)).style(theme::svg::primary)
 }
 
 pub fn megaphone<'a>() -> Svg<'a, Theme> {
     let entypo_megaphone =
         include_bytes!("../assets/fontello/entypo-megaphone.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_megaphone))
+    svg(svg::Handle::from_memory(entypo_megaphone)).style(theme::svg::primary)
 }
 
 pub fn theme_editor<'a>() -> Svg<'a, Theme> {
     let entypo_palette =
         include_bytes!("../assets/fontello/entypo-palette.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_palette))
+    svg(svg::Handle::from_memory(entypo_palette)).style(theme::svg::primary)
 }
 
 pub fn undo<'a>() -> Text<'a> {
@@ -109,28 +109,28 @@ pub fn logs<'a>() -> Svg<'a, Theme> {
     let entypo_bucket =
         include_bytes!("../assets/fontello/entypo-bucket.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_bucket))
+    svg(svg::Handle::from_memory(entypo_bucket)).style(theme::svg::primary)
 }
 
 pub fn menu<'a>() -> Svg<'a, Theme> {
     let typicons_menu =
         include_bytes!("../assets/fontello/typicons-menu.svg").to_vec();
 
-    svg(svg::Handle::from_memory(typicons_menu))
+    svg(svg::Handle::from_memory(typicons_menu)).style(theme::svg::primary)
 }
 
 pub fn documentation<'a>() -> Svg<'a, Theme> {
     let fontawesome_book =
         include_bytes!("../assets/fontello/fontawesome-book.svg").to_vec();
 
-    svg(svg::Handle::from_memory(fontawesome_book))
+    svg(svg::Handle::from_memory(fontawesome_book)).style(theme::svg::primary)
 }
 
 pub fn highlights<'a>() -> Svg<'a, Theme> {
     let entypo_bell =
         include_bytes!("../assets/fontello/entypo-bell.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_bell))
+    svg(svg::Handle::from_memory(entypo_bell)).style(theme::svg::primary)
 }
 
 pub fn scroll_to_bottom<'a>() -> Text<'a> {
@@ -150,6 +150,7 @@ pub fn config<'a>() -> Svg<'a, Theme> {
         include_bytes!("../assets/fontello/fontawesome-file-code.svg").to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_file_code))
+        .style(theme::svg::primary)
 }
 
 pub fn open<'a>() -> Text<'a> {
@@ -160,7 +161,7 @@ pub fn star<'a>() -> Svg<'a, Theme> {
     let fontawesome_star =
         include_bytes!("../assets/fontello/fontawesome-star.svg").to_vec();
 
-    svg(svg::Handle::from_memory(fontawesome_star))
+    svg(svg::Handle::from_memory(fontawesome_star)).style(theme::svg::primary)
 }
 
 pub fn certificate<'a>() -> Svg<'a, Theme> {
@@ -169,13 +170,14 @@ pub fn certificate<'a>() -> Svg<'a, Theme> {
             .to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_certificate))
+        .style(theme::svg::primary)
 }
 
 pub fn circle<'a>() -> Svg<'a, Theme> {
     let fontawesome_circle =
         include_bytes!("../assets/fontello/fontawesome-circle.svg").to_vec();
 
-    svg(svg::Handle::from_memory(fontawesome_circle))
+    svg(svg::Handle::from_memory(fontawesome_circle)).style(theme::svg::primary)
 }
 
 pub fn circle_empty<'a>() -> Svg<'a, Theme> {
@@ -184,6 +186,7 @@ pub fn circle_empty<'a>() -> Svg<'a, Theme> {
             .to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_circle_empty))
+        .style(theme::svg::primary)
 }
 
 pub fn dot_circled<'a>() -> Svg<'a, Theme> {
@@ -192,6 +195,7 @@ pub fn dot_circled<'a>() -> Svg<'a, Theme> {
             .to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_dot_circled))
+        .style(theme::svg::primary)
 }
 
 pub fn asterisk<'a>() -> Svg<'a, Theme> {
@@ -199,13 +203,14 @@ pub fn asterisk<'a>() -> Svg<'a, Theme> {
         include_bytes!("../assets/fontello/fontawesome-asterisk.svg").to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_asterisk))
+        .style(theme::svg::primary)
 }
 
 pub fn speaker<'a>() -> Svg<'a, Theme> {
     let entypo_sound =
         include_bytes!("../assets/fontello/entypo-sound.svg").to_vec();
 
-    svg(svg::Handle::from_memory(entypo_sound))
+    svg(svg::Handle::from_memory(entypo_sound)).style(theme::svg::primary)
 }
 
 pub fn lightbulb<'a>() -> Svg<'a, Theme> {
@@ -213,20 +218,21 @@ pub fn lightbulb<'a>() -> Svg<'a, Theme> {
         include_bytes!("../assets/fontello/fontawesome-lightbulb.svg").to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_lightbulb))
+        .style(theme::svg::primary)
 }
 
 pub fn quit<'a>() -> Svg<'a, Theme> {
     let mfg_labs_logout =
         include_bytes!("../assets/fontello/mfg-labs-logout.svg").to_vec();
 
-    svg(svg::Handle::from_memory(mfg_labs_logout))
+    svg(svg::Handle::from_memory(mfg_labs_logout)).style(theme::svg::primary)
 }
 
 pub fn channel_discovery<'a>() -> Svg<'a, Theme> {
     let fontawesome_users =
         include_bytes!("../assets/fontello/fontawesome-users.svg").to_vec();
 
-    svg(svg::Handle::from_memory(fontawesome_users))
+    svg(svg::Handle::from_memory(fontawesome_users)).style(theme::svg::primary)
 }
 
 pub fn plus<'a>() -> Text<'a> {
@@ -246,6 +252,7 @@ pub fn not_sent<'a>() -> Svg<'a, Theme> {
         include_bytes!("../assets/fontello/fontawesome-attention.svg").to_vec();
 
     svg(svg::Handle::from_memory(fontawesome_attention))
+        .style(theme::svg::primary)
 }
 
 pub fn eraser<'a>() -> Text<'a> {
@@ -259,6 +266,7 @@ pub fn spinner<'a>(angle: f32) -> Svg<'a, Theme> {
         .width(15)
         .height(15)
         .rotation(iced::Radians(angle))
+        .style(theme::svg::primary)
 }
 
 fn to_text<'a>(unicode: char) -> Text<'a> {
