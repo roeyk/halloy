@@ -9,8 +9,8 @@ use data::{
 };
 use iced::widget::text::{LineHeight, Shaping};
 use iced::widget::{
-    Column, Row, Scrollable, Space, Svg, button, column, container, pane_grid,
-    row, rule, scrollable, space, stack,
+    Column, Row, Scrollable, Space, button, column, container, pane_grid, row,
+    rule, scrollable, space, stack,
 };
 use iced::{
     Alignment, Border, ContentFit, Length, Padding, Task, mouse, padding,
@@ -19,6 +19,7 @@ use itertools::Either;
 use tokio::time;
 
 use super::{Focus, Panes, Server};
+use crate::widget::text_color_svg::TextColorSvg;
 use crate::widget::{
     Element, Text, TextExt, context_menu, double_pass, image, text,
 };
@@ -239,11 +240,11 @@ impl Sidebar {
                         .contains(&config::sidebar::InternalBuffer::Logs));
         let system_information = self.system_information.clone();
 
-        let icon = icon::menu().style(theme::svg::primary);
+        let icon = icon::menu();
 
         let badge = if show_notification_dot {
             Some((
-                icon::circle().style(theme::svg::tertiary),
+                icon::circle().style(theme::text::tertiary),
                 dimensions.unread_indicator_size,
             ))
         } else {
@@ -283,7 +284,7 @@ impl Sidebar {
                     let context_button =
                         |title: Text<'a>,
                          keybinds: Option<&data::shortcut::KeyBinds>,
-                         icon: Svg<'a, Theme>,
+                         icon: TextColorSvg<'a, Theme>,
                          message: Message| {
                             let title = title
                                 .line_height(theme::line_height(&config.font));
@@ -329,19 +330,19 @@ impl Sidebar {
                         Menu::QuitApplication => context_button(
                             text("Quit Halloy"),
                             Some(&keyboard.quit_application),
-                            icon::quit().style(theme::svg::primary),
+                            icon::quit(),
                             Message::QuitApplication,
                         ),
                         Menu::RefreshConfig => context_button(
                             text("Reload config file"),
                             Some(&keyboard.reload_configuration),
-                            icon::refresh().style(theme::svg::primary),
+                            icon::refresh(),
                             Message::ReloadConfigFile,
                         ),
                         Menu::CommandBar => context_button(
                             text("Command Bar"),
                             Some(&keyboard.command_bar),
-                            icon::search().style(theme::svg::primary),
+                            icon::search(),
                             Message::ToggleCommandBar,
                         ),
                         Menu::FileTransfers => context_button(
@@ -361,9 +362,9 @@ impl Sidebar {
                             Some(&keyboard.file_transfers),
                             icon::file_transfer().style(
                                 if file_transfers.is_empty() {
-                                    theme::svg::primary
+                                    theme::text::primary
                                 } else {
-                                    theme::svg::tertiary
+                                    theme::text::tertiary
                                 },
                             ),
                             Message::ToggleInternalBuffer(
@@ -373,7 +374,7 @@ impl Sidebar {
                         Menu::Highlights => context_button(
                             text("Highlights"),
                             Some(&keyboard.highlights),
-                            icon::highlights().style(theme::svg::primary),
+                            icon::highlights(),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::Highlights,
                             ),
@@ -381,8 +382,7 @@ impl Sidebar {
                         Menu::ChannelDiscovery => context_button(
                             text("Channel Discovery"),
                             None,
-                            icon::channel_discovery()
-                                .style(theme::svg::primary),
+                            icon::channel_discovery(),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::ChannelDiscovery(None),
                             ),
@@ -403,9 +403,9 @@ impl Sidebar {
                                 }),
                             Some(&keyboard.logs),
                             icon::logs().style(if logs_has_unread {
-                                theme::svg::tertiary
+                                theme::text::tertiary
                             } else {
-                                theme::svg::primary
+                                theme::text::primary
                             }),
                             Message::ToggleInternalBuffer(
                                 buffer::Internal::Logs,
@@ -414,7 +414,7 @@ impl Sidebar {
                         Menu::ThemeEditor => context_button(
                             text("Theme Editor"),
                             Some(&keyboard.theme_editor),
-                            icon::theme_editor().style(theme::svg::primary),
+                            icon::theme_editor(),
                             Message::ToggleThemeEditor,
                         ),
                         Menu::HorizontalRule => match length {
@@ -431,13 +431,13 @@ impl Sidebar {
                                         .map(font::get),
                                 ),
                             None,
-                            icon::megaphone().style(theme::svg::tertiary),
+                            icon::megaphone().style(theme::text::tertiary),
                             Message::OpenReleaseWebsite,
                         ),
                         Menu::Version => context_button(
                             text("About Halloy"),
                             None,
-                            icon::documentation().style(theme::svg::primary),
+                            icon::documentation(),
                             Message::OpenAbout {
                                 version: version.current.clone(),
                                 commit: data::environment::GIT_HASH
@@ -451,13 +451,13 @@ impl Sidebar {
                         Menu::Documentation => context_button(
                             text("Documentation"),
                             None,
-                            icon::documentation().style(theme::svg::primary),
+                            icon::documentation(),
                             Message::OpenDocumentation,
                         ),
                         Menu::OpenConfigFile => context_button(
                             text("Open config file"),
                             Some(&keyboard.open_config_file),
-                            icon::config().style(theme::svg::primary),
+                            icon::config(),
                             Message::OpenConfigFile,
                         ),
                     }
@@ -1030,14 +1030,11 @@ fn upstream_buffer_button<'a>(
         {
             Some(Icon::Upstream(server_icon))
         } else {
-            Some(Icon::Internal(
-                if server.is_bouncer_network() {
-                    icon::link()
-                } else {
-                    icon::connected()
-                }
-                .style(theme::svg::primary),
-            ))
+            Some(Icon::Internal(if server.is_bouncer_network() {
+                icon::link()
+            } else {
+                icon::connected()
+            }))
         }
     } else {
         None
@@ -1047,7 +1044,7 @@ fn upstream_buffer_button<'a>(
         && !connected
     {
         Some((
-            icon::disconnected().style(theme::svg::error),
+            icon::disconnected().style(theme::text::error),
             dimensions.icon_badge_size,
         ))
     } else if show_highlight_icon
@@ -1055,7 +1052,7 @@ fn upstream_buffer_button<'a>(
             icon::from_icon(config.sidebar.unread_indicator.highlight_icon)
     {
         Some((
-            highlight_icon.style(theme::svg::highlight_indicator),
+            highlight_icon.style(theme::text::highlight_indicator),
             dimensions.highlight_indicator_size,
         ))
     } else if show_unread_icon
@@ -1063,7 +1060,7 @@ fn upstream_buffer_button<'a>(
             icon::from_icon(config.sidebar.unread_indicator.icon)
     {
         Some((
-            unread_icon.style(theme::svg::unread_indicator),
+            unread_icon.style(theme::text::unread_indicator),
             dimensions.unread_indicator_size,
         ))
     } else {
@@ -1451,7 +1448,7 @@ fn internal_buffer_button<'a>(
                     config.sidebar.unread_indicator.highlight_icon,
                 ) {
                 Some((
-                    highlight_icon.style(theme::svg::highlight_indicator),
+                    highlight_icon.style(theme::text::highlight_indicator),
                     dimensions.highlight_indicator_size,
                 ))
             } else {
@@ -1475,7 +1472,7 @@ fn internal_buffer_button<'a>(
                     icon::from_icon(config.sidebar.unread_indicator.icon)
             {
                 Some((
-                    unread_icon.style(theme::svg::unread_indicator),
+                    unread_icon.style(theme::text::unread_indicator),
                     dimensions.unread_indicator_size,
                 ))
             } else {
@@ -1548,12 +1545,12 @@ fn internal_buffer_button<'a>(
 
 enum Icon<'a> {
     Upstream(&'a Image),
-    Internal(Svg<'a, Theme>),
+    Internal(TextColorSvg<'a, Theme>),
 }
 
 fn sidebar_icon<'a>(
     icon: Option<Icon<'a>>,
-    indicator: Option<(Svg<'a, Theme>, u32)>,
+    indicator: Option<(TextColorSvg<'a, Theme>, u32)>,
     dimensions: Dimensions,
     sidebar_is_horizontal: bool,
 ) -> impl IntoIterator<Item = Element<'a, Message>> {
@@ -1566,11 +1563,7 @@ fn sidebar_icon<'a>(
             Icon::Upstream(server_icon) => {
                 image::from_data(server_icon, true, ContentFit::Contain)
             }
-            Icon::Internal(icon) => icon
-                .style(theme::svg::primary)
-                .width(Length::Shrink)
-                .content_fit(ContentFit::Contain)
-                .into(),
+            Icon::Internal(icon) => icon.into(),
         })
         .width(dimensions.icon_size)
         .height(dimensions.icon_size)
